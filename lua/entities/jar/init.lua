@@ -76,4 +76,13 @@ function ENT:Think()
             self.mintamount = 0
             self.process = false
         end
+
+        if self.ready == false then
+            
+            self:SetColor(Color(0,255,255,255))
+
+        end
+
+        self.ready = true
+        self.process = true
 end

@@ -11,12 +11,8 @@ function ENT:Initialize()
     self:PhysicsInit(SOLID_VPHYSICS)
     self:SetMoveType(MOVETYPE_VPHYSICS)
     self:SetSolid(SOLID_VPHYSICS)
-    --self:SetColor(color_black)
-    --self:SetMaterial("models/debug/debugwhite")
 
-    --CurTime() - ile serwer jest już działający (w sekundach)
-
-    --self.timer = CurTime() --self.timer przechowa czas wtedy kiedy entity powstało
+    self:SetFilterBroken(false)
 
     local phys = self:GetPhysicsObject()
 
@@ -25,4 +21,29 @@ function ENT:Initialize()
         phys:Wake()
          
     end
+end
+
+function ENT:Use(a,c)
+    local s = self:GetTheStation() --the station but in a var
+    if self:GetFilterBroken(true) && s:GetIsFilter() == true then
+        
+        local s = self:GetTheStation() --the station but in a var
+        self:SetParent()
+        self:SetMoveType(MOVETYPE_VPHYSICS)
+        self:SetPos(s:GetPos() + (s:GetAngles():Up() * -5) + (self:GetAngles():Forward() * -25))
+        s:SetIsFilter(false)
+        --self:SetMoveType(MOVETYPE_VPHYSICS)
+
+    end
+
+end
+
+function ENT:Think()
+
+    if self:GetFilterBroken() == true then
+        self:SetColor(Color(0,255,0))
+    else
+        self:SetColor(Color(255,0,0))
+    end
+
 end

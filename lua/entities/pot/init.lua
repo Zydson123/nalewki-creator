@@ -4,20 +4,17 @@ AddCSLuaFile("imgui.lua")
 local imgui = include("imgui.lua") 
 include("shared.lua")
 
---AddCSLuaFile("imgui.lua")
---local imgui = include("imgui.lua") 
-
-
-
 function ENT:Initialize()
     self:SetModel("models/props_c17/metalPot001a.mdl")
     self:PhysicsInit(SOLID_VPHYSICS)
     self:SetMoveType(MOVETYPE_VPHYSICS)
     self:SetSolid(SOLID_VPHYSICS)
 	self.InStove = false
-    self:SetOwner(world)
 
-    self:SetIsFull(0)
+    self:SetIsFull(false)
+
+    self:SetIsCooked(false)
+
     self.wateramount=0
     self.sugaramount=0
 
@@ -44,13 +41,42 @@ function ENT:StartTouch(ent)
 
 end
 
-function ENT:Think()
-
-if self.wateramount == 1 and self.sugaramount == 1 then
+function ENT:Use(a,c)
     
-    self:SetIsFull(1)
+
+    if self:GetIsCooked() == true then
+        local stove = self:GetStove()
+        print(self)
+        print(self:GetAttachedSpot2())
+        self:SetParent()
+        self:SetMoveType(MOVETYPE_VPHYSICS)
+        self:SetPos(stove:GetPos() + (stove:GetAngles():Up() * -10) + (stove:GetAngles():Forward() * 35))
+
+        if self:GetAttachedSpot2() == 1 then
+            stove.spot1 = true
+        end
+        if self:GetAttachedSpot2() == 2 then
+            stove.spot2 = true
+        end
+        if self:GetAttachedSpot2() == 3 then
+            stove.spot3 = true
+        end
+        if self:GetAttachedSpot2() == 4 then
+            stove.spot4 = true
+        end
+
+    end
 
 end
-self:SetIsFull(1)
+function ENT:Think()
+
+if self.wateramount == 1 and self.sugaramount == 1 and self:GetIsFull() == false then
+    
+
+    self:SetIsFull(true)
+
+end
+
+self:SetIsFull(true)
 
 end

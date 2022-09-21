@@ -6,7 +6,8 @@ ENT.Spawnable = true
 ENT.Category = "tincture maker script"
 
 function ENT:SetupDataTables()
-	self:NetworkVar("Int", 0, "IsFull")
-	self:NetworkVar("Int", 1, "IsCooked")
+	self:NetworkVar("Entity", 0, "Stove")
+	self:NetworkVar("Bool", 0, "IsFull")
+	self:NetworkVar("Bool", 1, "IsCooked")
 	self:NetworkVar("Int", 0, "AttachedSpot2")
 end
