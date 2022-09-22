@@ -19,13 +19,14 @@ function ENT:Initialize()
 
     self:SetHealth(1000)
 
-    self.delay = 1 --this is the time the water will cook for
-	self:SetCookStartTime(CurTime())
-	self:SetCookCurrentTime(self.delay)
+    self.delay = 5 --this is the time the water will cook for
+	self:SetCookCurrentTime(CurTime())
+	self:SetCookEndTime(self.delay)
 	self.endTime = CurTime() + self.delay --delay is the amount the water will cook, needs to be changed in both places to the same value to take effect
 
-	self:SetTrigger(true)
-    self.IsCooking = false
+    self:SetIsCooking(false)
+
+    self:SetIsReady(false)
 
     self.spot1 = true
     self.spot2 = true
@@ -44,17 +45,25 @@ end
 
 function ENT:Think()
     
+    if IsValid(self:GetSpotOne()) == false && IsValid(self:GetSpotTwo()) == false && IsValid(self:GetSpotThree()) == false && IsValid(self:GetSpotFour()) == false && self:GetIsReady() == true then
+
+        self:SetIsReady(false)
+
+    end
+
     net.Receive("start", function(len,ply)
-        if self.IsCooking == false && self.spot1 == false then
+        if self:GetIsCooking() == false && self.spot1 == false && self:GetIsReady() == false then
             self.endTime = CurTime() + self.delay
 
-            	self:SetCookStartTime(CurTime())
-	            self:SetCookCurrentTime(self.delay)
-            self.IsCooking = net.ReadBool()
+                PrintMessage(HUD_PRINTTALK, "Cooking starts!!!")
+                self:SetCookCurrentTime(CurTime())
+                self:SetCookEndTime(self.delay)
+                self:SetIsCooking(net.ReadBool())
+
         end
     end)
 
-    if self.IsCooking == true then
+    if self:GetIsCooking() == true then
 
         if CurTime() >= self.endTime then
 
@@ -96,33 +105,19 @@ function ENT:Think()
 
             PrintMessage(HUD_PRINTTALK, "Done!!!")
 
-            self.IsCooking = false
+            self:SetIsReady(true)
+
+            self:SetIsCooking(false)
 
         end
 
     end
     
-    --print(self.IsCooking)
-
-end
-
-function ENT:EjectPot() 
-        print("--------------------Ejecting starts now----------------------")
-            local p1 = self:GetSpotOne()
-            print("Ejected pot 1: ")
-            print(p1:GetAttachedSpot2())
-            print(p1)
-            p1:SetParent()
-            p1:SetMoveType(MOVETYPE_VPHYSICS)  
-            p1:SetPos(self:GetPos() + (self:GetAngles():Up() * -10) + (self:GetAngles():Forward() * 35))
-            self.spot1 = true
-            p1:SetAttachedSpot2(0)
-            self:SetSpotOne(nil)
 end
 
 function ENT:StartTouch(e)
     
-    if e:GetClass() == "pot" && e:GetIsFull() == true && e:GetIsCooked() == false && self.IsCooking == false then
+    if e:GetClass() == "pot" && e:GetIsFull() == true && e:GetIsCooked() == false && self:GetIsCooking() == false then
         
         if self.spot1 == true then
             print("uno")
@@ -170,7 +165,7 @@ function ENT:StartTouch(e)
 
             --sets the pots spot into a certain spot on the stove
             p3:SetPos(self:GetPos() + (self:GetAngles():Up() * 26) + (self:GetAngles():Right() * 12) + (self:GetAngles():Forward() * -10))
-            --p3:SetAngles(self:GetAngles())
+            p3:SetAngles(self:GetAngles())
             p3:SetParent(self)
 
             p3:SetAttachedSpot2(3)
@@ -188,7 +183,7 @@ function ENT:StartTouch(e)
 
             --sets the pots spot into a certain spot on the stove
             p4:SetPos(self:GetPos() + (self:GetAngles():Up() * 26) + (self:GetAngles():Right() * -12) + (self:GetAngles():Forward() * -10))
-            --p4:SetAngles(self:GetAngles())
+            p4:SetAngles(self:GetAngles())
             p4:SetParent(self)
 
 

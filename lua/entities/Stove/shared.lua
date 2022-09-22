@@ -7,7 +7,9 @@ ENT.Category = "tincture maker script"
 
 function ENT:SetupDataTables()
 	self:NetworkVar("Float", 0, "CookCurrentTime")
-	self:NetworkVar("Float", 1, "CookStartTime")
+	self:NetworkVar("Float", 1, "CookEndTime")
+	self:NetworkVar("Bool", 0, "IsCooking")
+	self:NetworkVar("Bool", 1, "IsReady")
 	--all the spots
 	self:NetworkVar("Entity", 0, "SpotOne")
 	self:NetworkVar("Entity", 1, "SpotTwo")

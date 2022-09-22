@@ -54,15 +54,19 @@ function ENT:Use(a,c)
 
         if self:GetAttachedSpot2() == 1 then
             stove.spot1 = true
+            stove:SetSpotOne(nil)
         end
         if self:GetAttachedSpot2() == 2 then
             stove.spot2 = true
+            stove:SetSpotTwo(nil)
         end
         if self:GetAttachedSpot2() == 3 then
             stove.spot3 = true
+            stove:SetSpotThree(nil)
         end
         if self:GetAttachedSpot2() == 4 then
             stove.spot4 = true
+            stove:SetSpotFour(nil)
         end
 
     end
